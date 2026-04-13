@@ -4,8 +4,11 @@ extends CharacterBody3D
 const JUMP_VELOCITY     : float = 4.5
 const MOUSE_SENSITIVITY : float = 0.005
 
-const FORWARD_ACCEL  : float = 25.0   # acceleration while forward is held
-const FORWARD_DECEL  : float = 30.0  # deceleration when forward is released
+const FOV_DEFAULT: float = 75.0
+const FOV_MAX: float = 120.0
+
+const FORWARD_ACCEL  : float = 50.0   # acceleration while forward is held
+var forward_decel  : float = 30.0  # deceleration when forward is released
 const MAX_SPEED      : float = 60.0
 
 const DASH_SPEED     : float = 24.0
@@ -31,6 +34,7 @@ var poll_input      : Vector2 = Vector2.ZERO
 # ─── Exports ──────────────────────────────────────────────────────────────────
 @export var spring_arm : SpringArm3D
 @export var mesh       : MeshInstance3D
+@export var camera: Camera3D
 
 # ─── Ready ────────────────────────────────────────────────────────────────────
 func _ready() -> void:
@@ -75,9 +79,23 @@ func _physics_process(delta: float) -> void:
 
 		# ── IDLE ──────────────────────────────────────────────────────────────
 		State.IDLE:
+			# Steer while coasting — rotate velocity direction with side input
+			if has_side and _xz_speed() > STOP_THRESHOLD:
+				var current_speed := _xz_speed()
+				var current_dir := Vector3(velocity.x, 0, velocity.z).normalized()
+				var cam_yaw := spring_arm.global_transform.basis.get_euler().y
+				var flat := Basis(Vector3.UP, cam_yaw)
+				var side_dir := (flat * Vector3(input_dir.x, 0, 0)).normalized()
+				# Blend current travel direction with side input
+				var side_steering_balance = 0.05
+				var steered := (current_dir + side_dir * side_steering_balance).normalized()
+				velocity.x = steered.x * current_speed
+				velocity.z = steered.z * current_speed
+				mesh.rotation.y = lerp_angle(mesh.rotation.y, atan2(steered.x, steered.z), 0.15)
+			
 			# Decelerate to stop
-			velocity.x = move_toward(velocity.x, 0.0, FORWARD_DECEL * delta)
-			velocity.z = move_toward(velocity.z, 0.0, FORWARD_DECEL * delta)
+			velocity.x = move_toward(velocity.x, 0.0, forward_decel * delta)
+			velocity.z = move_toward(velocity.z, 0.0, forward_decel * delta)
 
 			if has_forward:
 				state = State.FORWARD
@@ -146,23 +164,29 @@ func _physics_process(delta: float) -> void:
 
 		# ── DASH ──────────────────────────────────────────────────────────────
 		State.DASH:
+			forward_decel = 40
+			#print("decel increased")
 			dash_timer -= delta
 			velocity.x  = dash_velocity.x
 			velocity.z  = dash_velocity.z
 
 			# Rotate mesh to face dash direction
-			mesh.rotation.y = lerp_angle(
-				mesh.rotation.y,
-				atan2(dash_velocity.x, dash_velocity.z),
-				0.3
-			)
+			#mesh.rotation.y = lerp_angle(
+				#mesh.rotation.y,
+				#atan2(dash_velocity.x, dash_velocity.z),
+				#0.3
+			#)
 
 			if dash_timer <= 0.0:
 				#velocity.x = 0.0
 				#velocity.z = 0.0
+				forward_decel = 30
+				print("decel decreased")
 				state = State.IDLE
 
 	move_and_slide()
+	var speed_ratio := _xz_speed() / MAX_SPEED
+	camera.fov = lerp(camera.fov, lerp(FOV_DEFAULT, FOV_MAX, speed_ratio), 0.1)
 
 # ─── Input ────────────────────────────────────────────────────────────────────
 func _input(event: InputEvent) -> void:

@@ -1,22 +1,28 @@
-[gd_scene load_steps=6 format=3 uid="uid://cgouxld34ioyd"]
+[gd_scene load_steps=8 format=3 uid="uid://cgouxld34ioyd"]
 
 [ext_resource type="Script" uid="uid://c502o7p125v6e" path="res://claude_movement.gd" id="1_37kl0"]
+[ext_resource type="Texture2D" uid="uid://covivv8x5a3ac" path="res://missing_text.png" id="2_8uh7m"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8uh7m"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_8uh7m"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ppyta"]
-size = Vector3(100, 1, 100)
+size = Vector3(669.39, 1, 651.111)
 
 [sub_resource type="BoxMesh" id="BoxMesh_37kl0"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_37kl0"]
+albedo_texture = ExtResource("2_8uh7m")
+uv1_scale = Vector3(50, 50, 50)
+
 [node name="Node3D" type="Node3D"]
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("spring_arm", "mesh")]
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("spring_arm", "mesh", "camera")]
 script = ExtResource("1_37kl0")
 spring_arm = NodePath("SpringArm3D")
 mesh = NodePath("MeshInstance3D")
+camera = NodePath("SpringArm3D/Camera3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 shape = SubResource("CapsuleShape3D_8uh7m")
@@ -38,8 +44,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 shape = SubResource("BoxShape3D_ppyta")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
-transform = Transform3D(98.5097, 0, 0, 0, 1.00104, 0, 0, 0, 98.0311, 0, 0, 0)
+transform = Transform3D(617.811, 0, 0, 0, 1.00104, 0, 0, 0, 617.409, 0, 0, 0)
 mesh = SubResource("BoxMesh_37kl0")
+surface_material_override/0 = SubResource("StandardMaterial3D_37kl0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.812521, 0.311078, -0.492991, 0, 0.845709, 0.533644, 0.582932, 0.433597, -0.687157, 0, 17, 0)
