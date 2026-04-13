@@ -1,0 +1,178 @@
+extends CharacterBody3D
+
+# ─── Constants ────────────────────────────────────────────────────────────────
+const JUMP_VELOCITY     : float = 4.5
+const MOUSE_SENSITIVITY : float = 0.005
+
+const FORWARD_ACCEL  : float = 25.0   # acceleration while forward is held
+const FORWARD_DECEL  : float = 30.0  # deceleration when forward is released
+const MAX_SPEED      : float = 60.0
+
+const DASH_SPEED     : float = 24.0
+const DASH_DURATION  : float = 0.1
+const DASH_COOLDOWN  : float = 3.0
+const POLL_WINDOW    : float = 0.10  # seconds to wait for diagonal input
+
+const STOP_THRESHOLD : float = 0.5   # xz speed below this allows back dash
+const DASH_INTERRUPT_SPEED : float = 4.0
+
+# ─── State ────────────────────────────────────────────────────────────────────
+enum State { IDLE, FORWARD, POLLING, DASH }
+var state           : State   = State.IDLE
+
+var dash_timer      : float   = 0.0  # counts down while dashing
+var cooldown_timer  : float   = 0.0  # counts down after a dash
+var poll_timer      : float   = 0.0  # counts down during poll window
+var dash_velocity   : Vector3 = Vector3.ZERO
+
+# Snap of input when poll started; updated during poll if diagonal arrives early
+var poll_input      : Vector2 = Vector2.ZERO
+
+# ─── Exports ──────────────────────────────────────────────────────────────────
+@export var spring_arm : SpringArm3D
+@export var mesh       : MeshInstance3D
+
+# ─── Ready ────────────────────────────────────────────────────────────────────
+func _ready() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+func _flat_basis() -> Basis:
+	var cam_yaw := spring_arm.global_transform.basis.get_euler().y
+	return Basis(Vector3.UP, cam_yaw)
+
+func _xz_speed() -> float:
+	return Vector2(velocity.x, velocity.z).length()
+
+func _start_dash(input_2d: Vector2) -> void:
+	# input_2d is in camera-relative 2D space; convert to world direction
+	var world_dir := (_flat_basis() * Vector3(input_2d.x, 0, input_2d.y)).normalized()
+	dash_velocity  = world_dir * DASH_SPEED
+	dash_timer     = DASH_DURATION
+	cooldown_timer = DASH_COOLDOWN
+	state          = State.DASH
+
+# ─── Physics ──────────────────────────────────────────────────────────────────
+func _physics_process(delta: float) -> void:
+
+	# Gravity
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Jump
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Tick timers
+	cooldown_timer = max(0.0, cooldown_timer - delta)
+
+	var input_dir := Input.get_vector("left", "right", "forward", "backward")
+	var has_forward  : bool = input_dir.y < -0.1
+	var has_backward : bool = input_dir.y >  0.1
+	var has_side     : bool = abs(input_dir.x) > 0.1
+
+	match state:
+
+		# ── IDLE ──────────────────────────────────────────────────────────────
+		State.IDLE:
+			# Decelerate to stop
+			velocity.x = move_toward(velocity.x, 0.0, FORWARD_DECEL * delta)
+			velocity.z = move_toward(velocity.z, 0.0, FORWARD_DECEL * delta)
+
+			if has_forward:
+				state = State.FORWARD
+
+			elif cooldown_timer <= 0.0:
+				# Side dash — start immediately, no need to poll
+				if has_side and not has_backward:
+					_start_dash(Vector2(input_dir.x, 0.0))
+
+				# Back (or back+side) — only allowed when nearly stopped
+				elif has_backward and _xz_speed() < STOP_THRESHOLD:
+					poll_input = input_dir
+					poll_timer = POLL_WINDOW
+					state      = State.POLLING
+
+		# ── FORWARD ───────────────────────────────────────────────────────────
+		State.FORWARD:
+			var flat      := _flat_basis()
+			var world_dir := (flat * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+
+			if has_forward:
+				# Accelerate toward max speed in current look+steer direction
+				var target := world_dir * MAX_SPEED
+				velocity.x = move_toward(velocity.x, target.x, FORWARD_ACCEL * delta)
+				velocity.z = move_toward(velocity.z, target.z, FORWARD_ACCEL * delta)
+
+				# Rotate mesh to face movement direction
+				if world_dir.length() > 0.1:
+					mesh.rotation.y = lerp_angle(
+						mesh.rotation.y,
+						atan2(world_dir.x, world_dir.z),
+						0.15
+					)
+
+				# Side dash only allowed below a speed threshold
+				#if has_side and not has_backward and cooldown_timer <= 0.0 and _xz_speed() < DASH_INTERRUPT_SPEED:
+					#_start_dash(Vector2(sign(input_dir.x), 0.0))
+				if (has_side or has_backward) and cooldown_timer <= 0.0 and _xz_speed() < DASH_INTERRUPT_SPEED:
+					poll_input = input_dir
+					poll_timer = POLL_WINDOW
+					state      = State.POLLING
+
+			else:
+				# Forward released — bleed off momentum
+				state = State.IDLE
+
+		# ── POLLING ───────────────────────────────────────────────────────────
+		# Waiting briefly to see if a diagonal (back+side) was intended
+		State.POLLING:
+			poll_timer -= delta
+
+			# Update polled input each frame so we catch side input immediately
+			poll_input = input_dir
+
+			# Early exit: side detected — fire diagonal dash now
+			if has_side and has_backward:
+				_start_dash(Vector2(input_dir.x, sign(input_dir.y)).normalized())
+
+			# Poll window expired — fire with whatever input we have
+			elif poll_timer <= 0.0:
+				_start_dash(Vector2(poll_input.x, sign(poll_input.y)).normalized())
+
+			# Input cancelled during poll — return to idle
+			elif not has_backward and not has_side:
+				state = State.IDLE
+
+		# ── DASH ──────────────────────────────────────────────────────────────
+		State.DASH:
+			dash_timer -= delta
+			velocity.x  = dash_velocity.x
+			velocity.z  = dash_velocity.z
+
+			# Rotate mesh to face dash direction
+			mesh.rotation.y = lerp_angle(
+				mesh.rotation.y,
+				atan2(dash_velocity.x, dash_velocity.z),
+				0.3
+			)
+
+			if dash_timer <= 0.0:
+				#velocity.x = 0.0
+				#velocity.z = 0.0
+				state = State.IDLE
+
+	move_and_slide()
+
+# ─── Input ────────────────────────────────────────────────────────────────────
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		spring_arm.rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
+		spring_arm.rotation.x = clamp(
+			spring_arm.rotation.x - event.relative.y * MOUSE_SENSITIVITY,
+			-PI / 3.0,
+			PI / 6.0
+		)
+
+	if event.is_action_pressed("exit"):
+		get_tree().quit()

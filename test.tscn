@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://cgouxld34ioyd"]
+
+[ext_resource type="Script" uid="uid://c502o7p125v6e" path="res://claude_movement.gd" id="1_37kl0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8uh7m"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8uh7m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ppyta"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_37kl0"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("spring_arm", "mesh")]
+script = ExtResource("1_37kl0")
+spring_arm = NodePath("SpringArm3D")
+mesh = NodePath("MeshInstance3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_8uh7m")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+spring_length = 7.0
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("BoxMesh_8uh7m")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+shape = SubResource("BoxShape3D_ppyta")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
+transform = Transform3D(98.5097, 0, 0, 0, 1.00104, 0, 0, 0, 98.0311, 0, 0, 0)
+mesh = SubResource("BoxMesh_37kl0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.812521, 0.311078, -0.492991, 0, 0.845709, 0.533644, 0.582932, 0.433597, -0.687157, 0, 17, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(3.9605, 0, 0, 0, 4.57467, 0, 0, 0, 1.18071, 8.57425, 0.445877, -16.0914)
+mesh = SubResource("BoxMesh_37kl0")
+skeleton = NodePath("../StaticBody3D/CollisionShape3D")
