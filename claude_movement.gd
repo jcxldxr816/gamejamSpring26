@@ -10,11 +10,11 @@ const MAX_SPEED      : float = 60.0
 
 const DASH_SPEED     : float = 24.0
 const DASH_DURATION  : float = 0.1
-const DASH_COOLDOWN  : float = 3.0
-const POLL_WINDOW    : float = 0.10  # seconds to wait for diagonal input
+const DASH_COOLDOWN  : float = 0.75
+const POLL_WINDOW    : float = 0.05  # seconds to wait for diagonal input
 
 const STOP_THRESHOLD : float = 0.5   # xz speed below this allows back dash
-const DASH_INTERRUPT_SPEED : float = 4.0
+const DASH_INTERRUPT_SPEED : float = 5.0
 
 # ─── State ────────────────────────────────────────────────────────────────────
 enum State { IDLE, FORWARD, POLLING, DASH }
@@ -83,12 +83,7 @@ func _physics_process(delta: float) -> void:
 				state = State.FORWARD
 
 			elif cooldown_timer <= 0.0:
-				# Side dash — start immediately, no need to poll
-				if has_side and not has_backward:
-					_start_dash(Vector2(input_dir.x, 0.0))
-
-				# Back (or back+side) — only allowed when nearly stopped
-				elif has_backward and _xz_speed() < STOP_THRESHOLD:
+				if (has_side or has_backward) and _xz_speed() < STOP_THRESHOLD:
 					poll_input = input_dir
 					poll_timer = POLL_WINDOW
 					state      = State.POLLING
@@ -138,7 +133,12 @@ func _physics_process(delta: float) -> void:
 
 			# Poll window expired — fire with whatever input we have
 			elif poll_timer <= 0.0:
-				_start_dash(Vector2(poll_input.x, sign(poll_input.y)).normalized())
+				# Fire with accumulated input — side only, back only, or diagonal
+				var dash_dir := Vector2(poll_input.x, max(poll_input.y, 0.0))
+				if dash_dir.length() > 0.1:
+					_start_dash(dash_dir.normalized())
+				else:
+					state = State.IDLE
 
 			# Input cancelled during poll — return to idle
 			elif not has_backward and not has_side:
