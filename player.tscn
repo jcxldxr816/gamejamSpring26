@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bq6hseew4qm01"]
+[gd_scene load_steps=12 format=3 uid="uid://bq6hseew4qm01"]
 
 [ext_resource type="Script" uid="uid://c502o7p125v6e" path="res://claude_movement.gd" id="1_i3pqv"]
 [ext_resource type="Script" uid="uid://cb06u5cr1tos5" path="res://PlayerTagging.gd" id="2_hqtel"]
@@ -8,6 +8,19 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8uh7m"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ykrsh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hqtel"]
+albedo_color = Color(0.0810967, 0.192686, 0.207715, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hqtel"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sweqy"]
+albedo_color = Color(0.162147, 0.393368, 0.398501, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_sweqy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2hs0m"]
+albedo_color = Color(0.429363, 0.107571, 0.136491, 1)
 
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("spring_arm", "mesh", "camera") groups=["player"]]
 script = ExtResource("1_i3pqv")
@@ -27,6 +40,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_ykrsh")
+surface_material_override/0 = SubResource("StandardMaterial3D_hqtel")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(-0.513054, 0, 2.91975e-08, 0, 0.703884, 0, -4.48526e-08, 0, -0.333981, 1.48108e-08, 0, -0.486774)
+mesh = SubResource("BoxMesh_hqtel")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_sweqy")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(-0.4, 1.49101e-08, 3.16311e-08, 0, 0.361818, -0.170552, -3.49691e-08, -0.170552, -0.361818, -1.48108e-08, 0.850955, -0.147943)
+mesh = SubResource("TorusMesh_sweqy")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_2hs0m")
 
 [node name="PlayerTagging" type="Node3D" parent="."]
 script = ExtResource("2_hqtel")
