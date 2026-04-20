@@ -68,6 +68,7 @@ func _ready() -> void:
 
 	if tag_decal:
 		tag_decal.hide()
+		#tag_decal.position.y + 0.5
 		tag_decal.rotation_degrees.x = 90.0
 
 	if prompt_indicator:
@@ -154,7 +155,8 @@ func _apply_decal(design: TagDesign) -> void:
 	if tag_decal == null:
 		return
 
-	var icon_paths := ["res://icon.svg", "res://smiley.png", "res://panda.png"]
+	#var icon_paths := ["res://icon.svg", "res://smiley.png", "res://panda.png"]
+	var icon_paths := ["res://smiley.png", "res://panda.png"]
 	var icon: Texture2D = load(icon_paths[randi() % icon_paths.size()])
 	if icon == null:
 		push_warning("TagSpot: could not load res://icon.svg")
@@ -189,7 +191,7 @@ func _render_icon_layer(icon: Texture2D, tint: Color, offset_index: int) -> Imag
 
 	# Shift each layer by a small amount so they don't stack identically
 	var offsets := [Vector2(0, 0), Vector2(8, -6), Vector2(-6, 8)]
-	var offset: Vector2 = offsets[offset_index]# % offsets.size()]
+	var offset: Vector2 = offsets[offset_index % offsets.size()]
 
 	for y in size:
 		for x in size:

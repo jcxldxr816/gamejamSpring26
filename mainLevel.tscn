@@ -1,23 +1,42 @@
-[gd_scene load_steps=8 format=3 uid="uid://dwx486vvas8dy"]
+[gd_scene load_steps=14 format=3 uid="uid://dwx486vvas8dy"]
 
 [ext_resource type="PackedScene" uid="uid://bq6hseew4qm01" path="res://player.tscn" id="1_ovsph"]
 [ext_resource type="PackedScene" uid="uid://bj44ll5jd16fp" path="res://box.tscn" id="2_yv4n1"]
 [ext_resource type="Texture2D" uid="uid://cr20iamm3aer5" path="res://stairs.png" id="3_yv4n1"]
 [ext_resource type="Texture2D" uid="uid://db7gglx5k63s6" path="res://character.png" id="4_qg288"]
 [ext_resource type="Texture2D" uid="uid://ds5n8fd5qao50" path="res://subway.png" id="5_picgv"]
+[ext_resource type="Material" uid="uid://co4djbu6lo814" path="res://darkFloor.tres" id="6_picgv"]
+[ext_resource type="PackedScene" uid="uid://c8vvdnaxf5xw8" path="res://CameraPole.tscn" id="7_yv058"]
+[ext_resource type="PackedScene" uid="uid://bjk55iwo8rkls" path="res://TagSpot.tscn" id="8_sh8go"]
+
+[sub_resource type="Environment" id="Environment_picgv"]
+background_mode = 1
+background_color = Color(0.0295066, 0.0295066, 0.0295066, 1)
+background_energy_multiplier = 6.54
+fog_enabled = true
+fog_density = 0.005
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lv0yf"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_yv4n1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sh8go"]
+albedo_color = Color(0.45, 0.3663, 0.288, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_picgv"]
+albedo_color = Color(0.136826, 0.136826, 0.136826, 1)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_ovsph")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.87049, 0)
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_picgv")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.479489, 0.483137, -0.732577, 1.00489e-08, 0.8348, 0.550554, 0.877548, -0.263984, 0.400277, 0, 8, 0)
-light_color = Color(0.685903, 0.905764, 0.94349, 1)
+light_color = Color(0.913839, 0.974275, 0.984732, 1)
 shadow_enabled = true
 
 [node name="ConceptSketch1" parent="." instance=ExtResource("2_yv4n1")]
@@ -39,7 +58,7 @@ lower_fade = 0.00380743
 [node name="SpotLight3D" type="SpotLight3D" parent="ConceptSketch1"]
 transform = Transform3D(0.0848276, 0, 0, 0, -4.37114e-08, 0.0796196, 0, -1, -5.49002e-07, 0, 1.02042, 2)
 light_color = Color(0.768627, 0.909804, 0.239216, 1)
-light_energy = 15.0
+light_energy = 25.0
 spot_range = 22.0
 spot_angle = 13.5268
 
@@ -54,7 +73,7 @@ texture_albedo = ExtResource("4_qg288")
 [node name="SpotLight3D2" type="SpotLight3D" parent="ConceptSketch2"]
 transform = Transform3D(0.086945, 0, 0, 0, -9.94198e-06, 0.0593563, 0, -1, -0.000167497, -0.025546, 0.625797, 2.08476)
 light_color = Color(0.768627, 0.909804, 0.239216, 1)
-light_energy = 15.0
+light_energy = 25.0
 spot_range = 22.0
 spot_angle = 13.5268
 
@@ -69,7 +88,7 @@ texture_albedo = ExtResource("5_picgv")
 [node name="SpotLight3D" type="SpotLight3D" parent="ConceptSketch3"]
 transform = Transform3D(0.0807622, 0, 0, 0, -1.04236e-05, 0.0566254, 0, -1, -0.00018408, -0.0719349, 0.625867, 2.14341)
 light_color = Color(0.768627, 0.909804, 0.239216, 1)
-light_energy = 15.0
+light_energy = 25.0
 spot_range = 22.0
 spot_angle = 13.5268
 
@@ -92,7 +111,163 @@ shape = SubResource("BoxShape3D_lv0yf")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="startingArea/ground/CollisionShape3D"]
 mesh = SubResource("BoxMesh_yv4n1")
+surface_material_override/0 = ExtResource("6_picgv")
+
+[node name="Node3D2" parent="startingArea" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(18.3146, 0, 0, 0, 15.1955, 0, 0, 0, 1.02046, 14.5577, -6.23851, 18.5379)
+
+[node name="Node3D" parent="startingArea" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(18.3146, 0, 0, 0, 15.1955, 0, 0, 0, 1.02046, -14.0153, -6.23851, 18.5379)
+
+[node name="HairpinStairs" type="Node3D" parent="."]
+
+[node name="ramp4" parent="HairpinStairs" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-22.011, -4.74391e-07, -2.08801e-06, 1.66646e-06, -9.53674e-07, -27.5789, 9.62131e-07, -10.8528, 1.90735e-06, -68.3438, -13.5087, 57.7573)
+
+[node name="MeshInstance3D" parent="HairpinStairs/ramp4/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, -3.55271e-15, -1.49593e-14, 1.42109e-14, 1, -1.19209e-07, 3.0656e-15, 0, 1, 0, 0.0335288, 0.00471371)
+surface_material_override/0 = ExtResource("6_picgv")
+
+[node name="ramp3" parent="HairpinStairs" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-9.57, -4.74391e-07, -2.08801e-06, 7.24548e-07, -9.53674e-07, -27.5789, 4.18318e-07, -10.8528, 1.90735e-06, -72.563, -0.514932, 24.7347)
+
+[node name="CollisionShape3D" parent="HairpinStairs/ramp3/StaticBody3D" index="0"]
+transform = Transform3D(1, -7.10543e-15, -5.49904e-15, 3.55271e-15, 1, 1.64846e-12, 4.88558e-15, 0, 1, 0, 0, 0.000610353)
+
+[node name="MeshInstance3D" parent="HairpinStairs/ramp3/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 3.55271e-15, 1.46211e-14, 0, 1, -1.19209e-07, -2.21984e-15, 0, 1, 0, 0.0335288, 0.00512592)
+surface_material_override/0 = ExtResource("6_picgv")
+
+[node name="ramp5" parent="HairpinStairs" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(9.57, 5.68434e-14, -2.27374e-13, -9.06578e-15, 9.3988, -13.7894, 5.68434e-14, 5.4264, 23.884, -72.3438, 1.62, 38.3975)
+
+[node name="MeshInstance3D" parent="HairpinStairs/ramp5/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 2.06204, -1.19209e-07, 0, 0, 1, 4.23516e-22, -0.534251, 0.022853)
+surface_material_override/0 = ExtResource("6_picgv")
+
+[node name="ramp2" parent="HairpinStairs" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-9.57, -4.74391e-07, -2.08801e-06, 0, 9.3988, -13.7894, 8.36636e-07, -5.4264, -23.884, -62.3438, -11.38, 43.3975)
+
+[node name="MeshInstance3D" parent="HairpinStairs/ramp2/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, -1.19209e-07, 0, 0, 1, 0, 0.0335288, 0.022853)
+surface_material_override/0 = ExtResource("6_picgv")
+
+[node name="ramp" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(9.57, 0, 0, 0, 9.3988, -13.7894, 0, 5.4264, 23.884, 0, -11.38, 27.3975)
+
+[node name="MeshInstance3D" parent="ramp/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, -1.19209e-07, 0, 0, 1, 0, 0.0335288, 0.022853)
+surface_material_override/0 = ExtResource("6_picgv")
+
+[node name="CameraPole" parent="." instance=ExtResource("7_yv058")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -19.7287, -2.86102e-06, 14.2305)
+
+[node name="TagSpot" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.1238, -10.7818, 52.9639)
+
+[node name="BigEnvironment" type="Node3D" parent="."]
+
+[node name="Node3D" parent="BigEnvironment" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(161.027, 0, 0, 0, 1, 0, 0, 0, 86.7801, -41.6342, -13.8129, 55.816)
+
+[node name="MeshInstance3D" parent="BigEnvironment/Node3D/StaticBody3D/CollisionShape3D" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_sh8go")
+
+[node name="Node3D3" parent="BigEnvironment" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(100.167, 0, 0, 0, 82.0988, 0, 0, 0, 44.1098, -74.2269, -6.55067, -2.93993)
+
+[node name="CollisionShape3D" parent="BigEnvironment/Node3D3/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000854671, 0, 0)
+
+[node name="MeshInstance3D" parent="BigEnvironment/Node3D3/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00182664, 0.0017606, 0.00287467)
+surface_material_override/0 = SubResource("StandardMaterial3D_picgv")
+
+[node name="Node3D4" parent="BigEnvironment" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(54.4308, 0, 0, 0, 82.0988, 0, 0, 0, 44.1098, 58.484, -2.09375, 81.2807)
+
+[node name="MeshInstance3D" parent="BigEnvironment/Node3D4/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00182664, 0.0017606, 0.00287467)
+surface_material_override/0 = SubResource("StandardMaterial3D_picgv")
+
+[node name="Node3D2" parent="BigEnvironment" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(54.4308, 0, 0, 0, 82.0988, 0, 0, 0, 44.1098, 49.5406, 25, 40.4048)
+
+[node name="MeshInstance3D" parent="BigEnvironment/Node3D2/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00182664, 0.0017606, 0.00287467)
+surface_material_override/0 = SubResource("StandardMaterial3D_picgv")
+
+[node name="CameraPole2" parent="." instance=ExtResource("7_yv058")]
+transform = Transform3D(-0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, -0.965926, 21.6578, -13.3965, 46.6531)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, -62.0224, 6, 29.3183)
+light_color = Color(0.1344, 0.56, 0.112, 1)
+light_energy = 15.0
+spot_range = 32.0
+spot_angle = 53.9371
+
+[node name="Node3D6" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-0.00313544, 0, -154.397, 0, 40.4318, 0, 1, 0, -9.77868e-05, -44.2584, 0.67978, 95.9979)
+
+[node name="Node3D5" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(1, 0, -5.98897e-06, 0, 40.4318, 0, 3.98333e-05, 0, 77.713, -122.291, 0.67978, 57.726)
+
+[node name="Node3D4" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-1, 0, 1.60036e-06, 0, 29.1298, 0, -1.05886e-06, 0, -35.1005, -67.3168, 0.67978, 35.2548)
+
+[node name="Node3D2" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-1.01515e-06, 0, -1, 0, 15.3734, 0, 23.2238, 0, -4.37114e-08, -57.6058, -5.89528, 52.197)
+
+[node name="Node3D" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(23.2238, 0, 0, 0, 15.3734, 0, 0, 0, 1, -68.9369, -5.89528, 63.4202)
+
+[node name="Node3D3" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(45.4195, 0, 0, 0, 40.2773, 0, 0, 0, 54.7777, -99.6991, -6.80635, 43.4297)
+
+[node name="TagSpot2" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(1, 0, -4.37114e-08, 0, 1, 0, 4.37114e-08, 0, 1, -54.9697, -11.4402, 19.4337)
+visibility_rating = 0.8
+
+[node name="TagSpot3" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -66.7704, -12.0512, 22.8188)
+
+[node name="CameraPole3" parent="." instance=ExtResource("7_yv058")]
+transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, -57.7749, -13.4402, 28.3853)
+
+[node name="drop1" type="Node3D" parent="." groups=["drop_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.71624, 0)
+
+[node name="drop2" type="Node3D" parent="." groups=["drop_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80.2441, 16, 67.0918)
+
+[node name="TagSpot4" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -21.768, 2, 9.24068)
+
+[node name="TagSpot5" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 5.48839, -11.6938, 95.0554)
+
+[node name="TagSpot6" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -19.0289, -10.2886, 93.4988)
+
+[node name="TagSpot7" parent="." groups=["tag_spots"] instance=ExtResource("8_sh8go")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -51.002, -10.681, 93.6186)
+
+[node name="CameraPole4" parent="." instance=ExtResource("7_yv058")]
+transform = Transform3D(0.996737, 0, -0.0807208, 0, 1, 0, 0.0807208, 0, 0.996737, -77.6779, 13.1388, 69.8725)
+
+[node name="CameraPole5" parent="." instance=ExtResource("7_yv058")]
+transform = Transform3D(0.208595, 0, 0.978002, 0, 1, 0, -0.978002, 0, 0.208595, -36.6573, -13.3891, 93.7654)
 
 [editable path="ConceptSketch1"]
 [editable path="ConceptSketch2"]
 [editable path="ConceptSketch3"]
+[editable path="HairpinStairs/ramp4"]
+[editable path="HairpinStairs/ramp3"]
+[editable path="HairpinStairs/ramp5"]
+[editable path="HairpinStairs/ramp2"]
+[editable path="ramp"]
+[editable path="BigEnvironment/Node3D"]
+[editable path="BigEnvironment/Node3D3"]
+[editable path="BigEnvironment/Node3D4"]
+[editable path="BigEnvironment/Node3D2"]

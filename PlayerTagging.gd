@@ -104,6 +104,7 @@ func _try_confirm_placement() -> void:
 		HeatManager.add_source("tag_placed_spike", 40.0)
 		await get_tree().create_timer(0,5).timeout
 		HeatManager.remove_source("tag_placed_spike")
+		print("decal placement success: ", success)
 	_cleanup()
 
 # ---------------------------------------------------------------------------

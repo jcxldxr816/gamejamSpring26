@@ -7,9 +7,9 @@ const MOUSE_SENSITIVITY : float = 0.005
 const FOV_DEFAULT: float = 75.0
 const FOV_MAX: float = 120.0
 
-const FORWARD_ACCEL  : float = 50.0   # acceleration while forward is held
-var forward_decel  : float = 30.0  # deceleration when forward is released
-const MAX_SPEED      : float = 60.0
+const FORWARD_ACCEL  : float = 40.0   # acceleration while forward is held
+var forward_decel  : float = 20.0  # deceleration when forward is released
+const MAX_SPEED      : float = 50.0
 
 const DASH_SPEED     : float = 24.0
 const DASH_DURATION  : float = 0.1
@@ -61,7 +61,14 @@ func _physics_process(delta: float) -> void:
 
 	# Gravity
 	if not is_on_floor():
-		velocity += get_gravity() * delta
+		var fall_multiplier := 2.5
+		var low_jump_multiplier := 1.5
+		if velocity.y < 0:
+			velocity += get_gravity() * fall_multiplier * delta
+		elif velocity.y > 0 and not Input.is_action_pressed("jump"):
+			velocity += get_gravity() * low_jump_multiplier * delta
+		else:
+			velocity += get_gravity() * delta
 
 	# Jump
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
