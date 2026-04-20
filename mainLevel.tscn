@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=3 uid="uid://dwx486vvas8dy"]
+
+[ext_resource type="PackedScene" uid="uid://bq6hseew4qm01" path="res://player.tscn" id="1_ovsph"]
+[ext_resource type="PackedScene" uid="uid://bj44ll5jd16fp" path="res://box.tscn" id="2_yv4n1"]
+[ext_resource type="Texture2D" uid="uid://cr20iamm3aer5" path="res://stairs.png" id="3_yv4n1"]
+[ext_resource type="Texture2D" uid="uid://db7gglx5k63s6" path="res://character.png" id="4_qg288"]
+[ext_resource type="Texture2D" uid="uid://ds5n8fd5qao50" path="res://subway.png" id="5_picgv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lv0yf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_yv4n1"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_ovsph")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.87049, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.479489, 0.483137, -0.732577, 1.00489e-08, 0.8348, 0.550554, 0.877548, -0.263984, 0.400277, 0, 8, 0)
+light_color = Color(0.685903, 0.905764, 0.94349, 1)
+shadow_enabled = true
+
+[node name="ConceptSketch1" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(11.7886, 0, 0, 0, 12.5597, 0, 0, 0, 1, 0.0852848, 6.91569, -15.1903)
+
+[node name="StaticBody3D" parent="ConceptSketch1" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1.70819, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="MeshInstance3D" parent="ConceptSketch1/StaticBody3D/CollisionShape3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0106222, 0.00372124, -0.0353699)
+
+[node name="Decal" type="Decal" parent="ConceptSketch1"]
+transform = Transform3D(1, 0, 0, 0, -4.37113e-08, -0.999994, 0, 0.999999, -4.37114e-08, 0, 0.170417, 0.492735)
+size = Vector3(0.973022, 1.28389, 1.34497)
+texture_albedo = ExtResource("3_yv4n1")
+upper_fade = 0.0100479
+lower_fade = 0.00380743
+
+[node name="SpotLight3D" type="SpotLight3D" parent="ConceptSketch1"]
+transform = Transform3D(0.0848276, 0, 0, 0, -4.37114e-08, 0.0796196, 0, -1, -5.49002e-07, 0, 1.02042, 2)
+light_color = Color(0.768627, 0.909804, 0.239216, 1)
+light_energy = 15.0
+spot_range = 22.0
+spot_angle = 13.5268
+
+[node name="ConceptSketch2" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(11.5015, 0, 0, 0, 16.8474, 0, 0, 0, 1, -14.1966, 9.1888, -15.2955)
+
+[node name="Decal" type="Decal" parent="ConceptSketch2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -0.999999, 0, 1, -4.37114e-08, -0.00216663, 0.00408936, 0.339874)
+size = Vector3(0.972229, 0.661194, 1.00256)
+texture_albedo = ExtResource("4_qg288")
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="ConceptSketch2"]
+transform = Transform3D(0.086945, 0, 0, 0, -9.94198e-06, 0.0593563, 0, -1, -0.000167497, -0.025546, 0.625797, 2.08476)
+light_color = Color(0.768627, 0.909804, 0.239216, 1)
+light_energy = 15.0
+spot_range = 22.0
+spot_angle = 13.5268
+
+[node name="ConceptSketch3" parent="." instance=ExtResource("2_yv4n1")]
+transform = Transform3D(12.382, 0, 0, 0, 17.6599, 0, 0, 0, 1, 13.976, 8.6791, -15.3541)
+
+[node name="Decal" type="Decal" parent="ConceptSketch3"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.00283813, 0.0245056, 0.547852)
+size = Vector3(0.935608, 0.898499, 0.904297)
+texture_albedo = ExtResource("5_picgv")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="ConceptSketch3"]
+transform = Transform3D(0.0807622, 0, 0, 0, -1.04236e-05, 0.0566254, 0, -1, -0.00018408, -0.0719349, 0.625867, 2.14341)
+light_color = Color(0.768627, 0.909804, 0.239216, 1)
+light_energy = 15.0
+spot_range = 22.0
+spot_angle = 13.5268
+
+[node name="startingArea" type="Node3D" parent="."]
+
+[node name="Wall3" parent="startingArea" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(-4.37114e-08, 0, -45.0624, 0, 19.1923, 0, 1, 0, -1.96974e-06, 0.381523, 9, -20)
+
+[node name="Wall2" parent="startingArea" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(1, 0, 0, 0, 19.1923, 0, 0, 0, 38.1297, 23.3815, 9, -1)
+
+[node name="Wall" parent="startingArea" instance=ExtResource("2_yv4n1")]
+transform = Transform3D(1, 0, 0, 0, 19.1923, 0, 0, 0, 38.1297, -22.3766, 9, -1)
+
+[node name="ground" type="StaticBody3D" parent="startingArea"]
+transform = Transform3D(45.6918, 0, 0, 0, 1, 0, 0, 0, 38.016, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="startingArea/ground"]
+shape = SubResource("BoxShape3D_lv0yf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="startingArea/ground/CollisionShape3D"]
+mesh = SubResource("BoxMesh_yv4n1")
+
+[editable path="ConceptSketch1"]
+[editable path="ConceptSketch2"]
+[editable path="ConceptSketch3"]

@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://bq6hseew4qm01"]
+
+[ext_resource type="Script" uid="uid://c502o7p125v6e" path="res://claude_movement.gd" id="1_i3pqv"]
+[ext_resource type="Script" uid="uid://cb06u5cr1tos5" path="res://PlayerTagging.gd" id="2_hqtel"]
+[ext_resource type="Script" uid="uid://din0qhifv6hp7" path="res://TaggingUI.gd" id="3_sweqy"]
+[ext_resource type="Script" uid="uid://cg2h3p5xayhp8" path="res://HeatBar.gd" id="4_hqtel"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8uh7m"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ykrsh"]
+
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("spring_arm", "mesh", "camera") groups=["player"]]
+script = ExtResource("1_i3pqv")
+spring_arm = NodePath("SpringArm3D")
+mesh = NodePath("MeshInstance3D")
+camera = NodePath("SpringArm3D/Camera3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_8uh7m")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+spring_length = 7.0
+
+[node name="Camera3D" type="Camera3D" parent="SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_ykrsh")
+
+[node name="PlayerTagging" type="Node3D" parent="."]
+script = ExtResource("2_hqtel")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_sweqy")
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer2"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_hqtel")

@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 # ─── Constants ────────────────────────────────────────────────────────────────
-const JUMP_VELOCITY     : float = 4.5
+const JUMP_VELOCITY     : float = 10.0
 const MOUSE_SENSITIVITY : float = 0.005
 
 const FOV_DEFAULT: float = 75.0

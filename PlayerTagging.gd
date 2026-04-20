@@ -9,6 +9,8 @@
 
 extends Node
 
+const TAGGING_HEAT_SOURCE := "player_tagging"
+
 # ---------------------------------------------------------------------------
 # Signals (for the heat/record system to connect to later)
 # ---------------------------------------------------------------------------
@@ -46,6 +48,7 @@ var _awaiting_placement: bool = false
 func _ready() -> void:
 	TaggingManager.creation_finished.connect(_on_design_finished)
 	TaggingManager.creation_cancelled.connect(_on_cancelled)
+	HeatManager.player_caught.connect(_on_player_caught)
 	var spots = get_tree().get_nodes_in_group("tag_spots")
 	print("found tag_spots: ", spots.size())
 	for spot in spots:
@@ -85,6 +88,9 @@ func _handle_initiate_or_confirm() -> void:
 	_active_spot = spot
 	_is_designing = true
 	tagging_started.emit(spot)
+	var base_rate := 5.0
+	var visibility_rate := spot.visibility_rating * 10.0
+	HeatManager.add_source(TAGGING_HEAT_SOURCE, base_rate + visibility_rate)
 	TaggingManager.start_creation()
 
 func _try_confirm_placement() -> void:
@@ -95,6 +101,9 @@ func _try_confirm_placement() -> void:
 	var success := _active_spot.confirm_placement()
 	if success:
 		tag_placed.emit(_pending_design, _active_spot)
+		HeatManager.add_source("tag_placed_spike", 40.0)
+		await get_tree().create_timer(0,5).timeout
+		HeatManager.remove_source("tag_placed_spike")
 	_cleanup()
 
 # ---------------------------------------------------------------------------
@@ -109,7 +118,19 @@ func _on_design_finished(design: TagDesign) -> void:
 
 func _on_cancelled() -> void:
 	_cleanup()
+	HeatManager.notify_tagging_cancelled()
 	tagging_cancelled.emit()
+
+func _on_player_caught() -> void:
+	_cleanup()
+	var all_designs := TaggingManager.get_all_placed_designs()
+	if all_designs.is_empty():
+		return
+	var last_design: TagDesign = all_designs.back()
+	var spot := get_node_or_null(last_design.spot_path) as TagSpot
+	if spot:
+		spot.remove_tag()
+	TaggingManager.remove_last_design()
 
 # ---------------------------------------------------------------------------
 # TagSpot proximity tracking
@@ -146,6 +167,7 @@ func _get_best_nearby_spot() -> TagSpot:
 # ---------------------------------------------------------------------------
 
 func _cleanup() -> void:
+	HeatManager.remove_source(TAGGING_HEAT_SOURCE)
 	_active_spot = null
 	_pending_design = null
 	_is_designing = false

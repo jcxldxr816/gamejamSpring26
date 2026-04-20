@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8vvdnaxf5xw8"]
+
+[ext_resource type="Script" uid="uid://c2vxu5r4bhcpx" path="res://SecurityCamera.gd" id="1_tfxyy"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_a31b6"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 5.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_tfxyy"]
+size = Vector3(3, 1, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tfxyy"]
+
+[node name="CameraPole" type="Node3D"]
+script = ExtResource("1_tfxyy")
+
+[node name="PoleMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("CylinderMesh_a31b6")
+
+[node name="CameraMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.259808, 0.15, 0, -0.15, 0.259808, 0, 0, 0, 0.3, 0.4, 5, 0)
+mesh = SubResource("BoxMesh_tfxyy")
+
+[node name="ConeLight" type="SpotLight3D" parent="."]
+transform = Transform3D(-5.16191e-08, 0.5, -0.866025, 2.98023e-08, 0.866025, 0.5, 1, 0, -5.96046e-08, 0.4, 5, 0)
+light_color = Color(0.85697, 0.106459, 0.155516, 1)
+light_energy = 10.0
+spot_range = 10.0
+spot_angle = 30.0
+
+[node name="DetectionArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("SphereShape3D_tfxyy")

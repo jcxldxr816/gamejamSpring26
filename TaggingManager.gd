@@ -103,6 +103,10 @@ func commit_design(design: TagDesign, world_pos: Vector3) -> void:
 ## Returns a copy of all placed designs (for the record system).
 func get_all_placed_designs() -> Array[TagDesign]:
 	return _placed_designs.duplicate()
+	
+func remove_last_design() -> void:
+	if not _placed_designs.is_empty():
+		_placed_designs.pop_back()
 
 ## Whether a creation session is currently in progress.
 func is_active() -> bool:
