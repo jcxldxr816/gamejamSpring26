@@ -1,11 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cgouxld34ioyd"]
+[gd_scene load_steps=11 format=3 uid="uid://cgouxld34ioyd"]
 
-[ext_resource type="Script" uid="uid://c502o7p125v6e" path="res://claude_movement.gd" id="1_37kl0"]
+[ext_resource type="PackedScene" uid="uid://bq6hseew4qm01" path="res://player.tscn" id="1_6uqi0"]
 [ext_resource type="Texture2D" uid="uid://covivv8x5a3ac" path="res://missing_text.png" id="2_8uh7m"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8uh7m"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_8uh7m"]
+[ext_resource type="PackedScene" uid="uid://c8vvdnaxf5xw8" path="res://CameraPole.tscn" id="4_ppyta"]
+[ext_resource type="PackedScene" uid="uid://bjk55iwo8rkls" path="res://TagSpot.tscn" id="5_ykrsh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ppyta"]
 size = Vector3(669.39, 1, 651.111)
@@ -16,26 +14,17 @@ size = Vector3(669.39, 1, 651.111)
 albedo_texture = ExtResource("2_8uh7m")
 uv1_scale = Vector3(50, 50, 50)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_g14j6"]
+size = Vector3(5, 10, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vbegm"]
+size = Vector3(5, 10, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ppyta"]
+
 [node name="Node3D" type="Node3D"]
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("spring_arm", "mesh", "camera")]
-script = ExtResource("1_37kl0")
-spring_arm = NodePath("SpringArm3D")
-mesh = NodePath("MeshInstance3D")
-camera = NodePath("SpringArm3D/Camera3D")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
-shape = SubResource("CapsuleShape3D_8uh7m")
-
-[node name="SpringArm3D" type="SpringArm3D" parent="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-spring_length = 7.0
-
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/SpringArm3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
-mesh = SubResource("BoxMesh_8uh7m")
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_6uqi0")]
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
@@ -50,9 +39,50 @@ surface_material_override/0 = SubResource("StandardMaterial3D_37kl0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.812521, 0.311078, -0.492991, 0, 0.845709, 0.533644, 0.582932, 0.433597, -0.687157, 0, 17, 0)
+visible = false
 shadow_enabled = true
 
+[node name="TestWall2" type="StaticBody3D" parent="."]
+transform = Transform3D(0.291921, 0, -0.956442, 0, 1, 0, 0.956442, 0, 0.291921, 16.6193, 4, -8.73251)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall2"]
+shape = SubResource("BoxShape3D_g14j6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall2"]
+mesh = SubResource("BoxMesh_vbegm")
+skeleton = NodePath("../../TestWall2")
+
+[node name="TagSpot2" parent="." groups=["tag_spots"] instance=ExtResource("5_ykrsh")]
+transform = Transform3D(0.291921, 0, -0.956442, 0, 1, 0, 0.956442, 0, 0.291921, 15.5025, -9.53674e-07, -8.54805)
+visibility_rating = 0.25
+
+[node name="TestWall" type="StaticBody3D" parent="."]
+transform = Transform3D(0.291921, 0, -0.956442, 0, 1, 0, 0.956442, 0, 0.291921, 15.0288, 4, -15.8293)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall"]
+shape = SubResource("BoxShape3D_g14j6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall"]
+mesh = SubResource("BoxMesh_vbegm")
+
+[node name="TagSpot" parent="." groups=["tag_spots"] instance=ExtResource("5_ykrsh")]
+transform = Transform3D(0.291921, 0, -0.956442, 0, 1, 0, 0.956442, 0, 0.291921, 13.912, 0, -15.6448)
+
+[node name="CameraPole" parent="." instance=ExtResource("4_ppyta")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.00435, 0, -14.7814)
+
+[node name="drop1" type="Node3D" parent="." groups=["drop_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.93154, -9.53674e-07, -15.6168)
+
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(3.9605, 0, 0, 0, 4.57467, 0, 0, 0, 1.18071, 8.57425, 0.445877, -16.0914)
-mesh = SubResource("BoxMesh_37kl0")
-skeleton = NodePath("../StaticBody3D/CollisionShape3D")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.50193, 5.10261, -15.8749)
+mesh = SubResource("BoxMesh_ppyta")
+skeleton = NodePath("../MeshInstance3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.36723, 6.45252, -14.6685)
+mesh = SubResource("BoxMesh_ppyta")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.154029, -1.30781, 1.11674)
+mesh = SubResource("BoxMesh_ppyta")

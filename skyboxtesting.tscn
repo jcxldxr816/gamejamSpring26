@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://kl1ym44xh0ed"]
+
+[ext_resource type="PackedScene" path="res://AllSkyFree_DeepDusk.tscn" id="1_wsdah"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="AllSkyFree_DeepDusk" parent="." instance=ExtResource("1_wsdah")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.4284, 0, 1.94363)

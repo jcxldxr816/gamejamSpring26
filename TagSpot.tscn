@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjk55iwo8rkls"]
+
+[ext_resource type="Script" uid="uid://b63l1m4kwye53" path="res://TagSpot.gd" id="1_l5lvs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mdaja"]
+size = Vector3(5, 5, 5)
+
+[node name="TagSpot" type="Node3D"]
+script = ExtResource("1_l5lvs")
+
+[node name="ProximityArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ProximityArea"]
+shape = SubResource("BoxShape3D_mdaja")
+
+[node name="TagDecal" type="Decal" parent="."]
+
+[node name="PromptIndicator" type="Node3D" parent="."]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+light_energy = 5.0
+spot_range = 6.0
+spot_angle = 41.1491
